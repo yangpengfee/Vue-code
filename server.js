@@ -10,7 +10,7 @@ function rewriteImport(content) {
     return content.replace(/ from ['|"]([^'"]+)['|"]/g,
         function (s0, s1) {
             if (s1[0] !== '.' && s1[1] !== '/') {
-                return `from '/@modules/${s1}'`
+                return ` from '/@modules/${s1}'`
             } else {
                 return s0
             }
@@ -18,30 +18,30 @@ function rewriteImport(content) {
 }
 app.use(ctx => {
     const { request: { url, query } } = ctx;
-    if (url === '/') {
+    if (url === "/") {
         let content = fs.readFileSync('./index.html', 'utf-8')
-        content = content.replace('<scripte', `
+        content = content.replace('<script', `
         <script>
-            window.process = {
-            env: {NODE_EV:'dev'}
-            }
-        </script>
-        <script
+        window.process = {
+          env: {NODE_EV:'dev'}
+        }
+      </script>
+      <script
         
         `)
-        ctx.type = 'text/html'
+        ctx.type = "text/html"
         ctx.body = content
     } else if (url.endsWith('.css')) {
         const p = path.resolve(__dirname, url.slice(1))
         const file = fs.readFileSync(p, 'utf-8')
         const content = `
-        const css= "${file.replace(/\n/g, '')}"
-        const link = document.createElemnet('style')
-        link.setAttribute(type,'text/css')
-        document.head.appendChild(link)
-        link.innerHTML = css
-        export default css
-        `
+       const css = "${file.replace(/\n/g, '')}"
+       const link = document.createElement('style')
+       link.setAttribute('type', 'text/css')
+       document.head.appendChild(link)
+       link.innerHTML = css
+       export default css
+    `
         ctx.type = 'application/javascript'
         ctx.body = content
     } else if (url.endsWith('.js')) {
